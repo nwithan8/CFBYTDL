@@ -1,8 +1,4 @@
-from cfbd import Game
-
-
 class Matchup:
-    def __init__(self, game: Game, team: str, week: int):
-        self.game = game
+    def __init__(self, team: str, week: int):
         self.team = team
         self.week = week
