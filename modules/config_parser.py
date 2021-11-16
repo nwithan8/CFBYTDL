@@ -7,13 +7,13 @@ class ConfigParser:
         self.config.set_file(filename=config_path)
 
     @property
-    def _cfbd_config(self) -> confuse.ConfigView:
-        return self.config.get('CFBD')
+    def _cfbd_config(self):
+        return self.config['CFBD'].get()
 
     @property
-    def _ytdl_config(self) -> confuse.ConfigView:
-        return self.config.get('YTDL')
+    def _ytdl_config(self):
+        return self.config['YTDL'].get()
 
     @property
     def cfbd_api_key(self) -> str:
-        return self._cfbd_config['APIKey'].get()
+        return self._cfbd_config.get('APIKey', '')
