@@ -3,11 +3,11 @@ from __future__ import annotations
 from classes.cli.question_answer import QuestionAndAnswers
 
 
-def send_message(message: str):
+def send_message(message: str) -> None:
     print(message)
 
 
-def ask_question(prompt: str):
+def ask_question(prompt: str) -> str:
     return input(f"{prompt} ")
 
 
@@ -31,7 +31,7 @@ def _ask_for_all_choices(prompt: str, choices: list) -> str:
     return ask_question(prompt=prompt)
 
 
-def ask_multiple_choices(prompt: str, choices: list) -> list:
+def ask_multiple_choices(prompt: str, choices: list) -> list[str]:
     answer = _ask_for_all_choices(prompt=prompt, choices=choices)
     selections = [selection.strip() for selection in answer.split(';')]
     if not all([validate_choice(choice=selection, choices=choices) for selection in selections]):
@@ -77,7 +77,7 @@ class CommandLine:
     def __init__(self):
         self._answers = {}
 
-    def ask_question(self, prompt: str, y_n: bool = False, confirm: bool = False):
+    def ask_question(self, prompt: str, y_n: bool = False, confirm: bool = False) -> None:
         if y_n:
             answer = ask_yes_or_no_question(prompt=prompt)
         else:
@@ -89,22 +89,8 @@ class CommandLine:
         else:
             self._answers[len(self._answers.keys())] = QuestionAndAnswers(question=prompt, answers=[answer])
 
-    def get_answers(self, question_number: int):
-        return self._answers[question_number].answers
-
-    @property
-    def all_answers(self):
-        return [self.get_answers(question_number=question_number) for question_number in self._answers]
-
-    def get_question(self, question_number: int):
-        return self._answers[question_number].question
-
-    @property
-    def all_questions(self):
-        return [self.get_question(question_number=question_number) for question_number in self._answers]
-
     def ask_choices(self, prompt: str, choices: list, least_number_selections: int = 1,
-                    most_number_selections: int = None, confirm: bool = False):
+                    most_number_selections: int = None, confirm: bool = False) -> None:
         answer = ask_specific_number_range_of_choices(prompt=prompt, choices=choices,
                                                       lower_number=least_number_selections,
                                                       higher_number=most_number_selections)
@@ -117,5 +103,25 @@ class CommandLine:
         else:
             self._answers[len(self._answers.keys())] = QuestionAndAnswers(question=prompt, answers=answer)
 
-    def get_choices(self, question_number: int):
+    def get_answers(self, question_number: int) -> list[str] | None:
+        question_number -= 1
+        if question_number not in self._answers.keys():
+            return None
+        return self._answers[question_number].answers
+
+    def get_choices(self, question_number: int) -> list[str] | None:
         return self.get_answers(question_number=question_number)
+
+    @property
+    def all_answers(self) -> list[list[str] | None]:
+        return [self.get_answers(question_number=question_number) for question_number in self._answers]
+
+    def get_question(self, question_number: int) -> str | None:
+        question_number -= 1
+        if question_number not in self._answers.keys():
+            return None
+        return self._answers[question_number].question
+
+    @property
+    def all_questions(self) -> list[str]:
+        return [self.get_question(question_number=question_number) for question_number in self._answers]
