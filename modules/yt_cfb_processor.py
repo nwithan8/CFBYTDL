@@ -1,7 +1,7 @@
-from modules import tools, sportsapi
-from modules.yt_downloader import Downloader
+from modules import sports_api
+from modules.video_processing.yt_downloader import Downloader
 from modules.yt_cfb_parser import Parser
-from modules.sportsapi import Sport, SportsAPI
+from modules.sports_api import SportsAPI
 
 
 def question(prompt: str):
@@ -54,12 +54,12 @@ class Processor:
 
     def _get_game_data(self):
         _sportapi = SportsAPI()
-        _team_1 = _sportapi.get_team(sport=sportsapi.Sport.NCAAF, team_name=self.team_1)
-        _team_2 = _sportapi.get_team(sport=sportsapi.Sport.NCAAF, team_name=self.team_2)
+        _team_1 = _sportapi.get_team(sport=sports_api.Sport.NCAAF, team_name=self.team_1)
+        _team_2 = _sportapi.get_team(sport=sports_api.Sport.NCAAF, team_name=self.team_2)
         if not _team_1 or not _team_2:
             print("Could not find one or both of the teams.")
             exit(1)
-        matchup = _sportapi.get_game_by_teams_and_year(sport=sportsapi.Sport.NCAAF, team_1=_team_1, team_2=_team_2, year=self.year)
+        matchup = _sportapi.get_game_by_teams_and_year(sport=sports_api.Sport.NCAAF, team_1=_team_1, team_2=_team_2, year=self.year)
         if not matchup:
             print("Matchup does not exist!")
             exit(1)

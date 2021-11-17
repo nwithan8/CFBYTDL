@@ -3,9 +3,9 @@ from typing import List
 
 from sportsipy.ncaaf.schedule import Schedule as ApiSchedule
 
-from modules.sportsapi.ncaaf.game import Game
+from modules.sports_api.ncaaf.game import Game
 
-from modules.sportsapi.utils import same_date
+from modules.sports_api.utils import same_date
 
 
 class Schedule:

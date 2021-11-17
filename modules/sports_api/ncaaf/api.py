@@ -3,9 +3,9 @@ from datetime import datetime
 from sportsipy.ncaaf.teams import Team as ApiTeam, _retrieve_all_teams
 from sportsipy.ncaaf.schedule import Schedule as ApiSchedule
 
-from modules.sportsapi.ncaaf.game import Game
-from modules.sportsapi.ncaaf.team import Team
-from modules.sportsapi.ncaaf.schedule import Schedule
+from modules.sports_api.ncaaf.game import Game
+from modules.sports_api.ncaaf.team import Team
+from modules.sports_api.ncaaf.schedule import Schedule
 
 
 class API:

@@ -1,5 +1,5 @@
-from modules.sportsapi import ncaaf
-from modules.sportsapi.enums import Sport
+from modules.sports_api import ncaaf
+from modules.sports_api.enums import Sport
 
 
 class SportsAPI:

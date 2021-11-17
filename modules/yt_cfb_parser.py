@@ -3,7 +3,7 @@ from typing import Union
 
 from yt_dlp import YoutubeDL
 
-from classes.team_pair import TeamPair
+from classes.sports.team_pair import TeamPair
 
 
 class Parser:
