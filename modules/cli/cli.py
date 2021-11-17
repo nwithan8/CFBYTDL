@@ -19,40 +19,39 @@ def ask_yes_or_no_question(prompt: str) -> bool:
     return False
 
 
-def _validate_choice(choice: str, choices: list) -> bool:
+def validate_choice(choice: str, choices: list) -> bool:
     if choice not in choices:
         print(f"Invalid choice: '{choice}'.")
         return False
     return True
 
 
-def ask_choice(prompt: str, choices: list) -> str:
+def _ask_for_all_choices(prompt: str, choices: list) -> str:
     prompt = f"{prompt} [{', '.join(choices)}] "
-    answer = ask_question(prompt=prompt)
-    if _validate_choice(choice=answer, choices=choices):
-        return answer
-    return ask_choice(prompt=prompt, choices=choices)
+    return ask_question(prompt=prompt)
 
 
 def ask_multiple_choices(prompt: str, choices: list) -> list:
-    prompt = f"{prompt} (Choose 1 or more, separated by ; ): "
-    answer = ask_choice(prompt=prompt, choices=choices)
-    return [selection.strip() for selection in answer.split(';')]
+    answer = _ask_for_all_choices(prompt=prompt, choices=choices)
+    selections = [selection.strip() for selection in answer.split(';')]
+    if not all([validate_choice(choice=selection, choices=choices) for selection in selections]):
+        return ask_multiple_choices(prompt=prompt, choices=choices)
+    return selections
 
 
 def ask_specific_number_range_of_choices(prompt: str, choices: list, lower_number: int = 1,
-                                         higher_number: int = None) -> \
-        list[str | None] | None | list[str]:
+                                         higher_number: int = None) -> list[str | None] | None | list[str]:
+    if lower_number > len(choices):
+        raise ValueError(f"Number of choices is smaller than number of requested choices.")
     if higher_number < lower_number:
         raise ValueError(f"Higher number is smaller than lower number.")
-    if higher_number == lower_number:
-        return ask_specific_number_of_choices(prompt=prompt, choices=choices, number=lower_number)
     if higher_number is None:
         prompt = f"{prompt} (Choose {lower_number} or more, separated by ; ): "
+    elif higher_number == lower_number:
+        prompt = f"{prompt} (Choose {lower_number}, separated by ; ): "
     elif lower_number == 1:
         prompt = f"{prompt} (Choose up to {higher_number}, separated by ; ): "
-    answer = ask_choice(prompt=prompt, choices=choices)
-    selections = [selection.strip() for selection in answer.split(';')]
+    selections = ask_multiple_choices(prompt=prompt, choices=choices)
     if higher_number and len(selections) > higher_number:
         print(f"Number of selected choices is larger than {higher_number}.")
         return None
@@ -62,24 +61,8 @@ def ask_specific_number_range_of_choices(prompt: str, choices: list, lower_numbe
     return selections
 
 
-def ask_specific_number_of_choices(prompt: str, choices: list, number: int = None) -> list[str | None] | None | list[
-    str]:
-    if number > len(choices):
-        raise ValueError(f"Number of choices is smaller than number of requested choices.")
-    if number < 1:
-        raise ValueError(f"Number of choices is smaller than 1.")
-    if number == 1:
-        return [ask_choice(prompt=prompt, choices=choices)]
-    if number is None:
-        prompt = f"{prompt} (Choose 1 or more, separated by ; ): "
-    prompt = f"{prompt} (Choose {number}, separated by ; ): "
-    answer = ask_choice(prompt=prompt, choices=choices)
-    selections = [selection.strip() for selection in answer.split(';')]
-    if number and len(selections) != number:
-        print(f"Number of selected choices is not {number}.")
-        return None
-    else:
-        return selections
+def ask_specific_number_of_choices(prompt: str, choices: list, number: int = None) -> list[str | None] | None | list[str]:
+    return ask_specific_number_range_of_choices(prompt=prompt, choices=choices, lower_number=number, higher_number=number)
 
 
 def confirm_answer(answer: str) -> bool:
