@@ -37,6 +37,10 @@ class SearchResult:
         return self._data['duration']
 
     @property
+    def duration_stamp(self) -> str:
+        return self._duration
+
+    @property
     def seconds(self) -> int:
         seconds = 0
         for i in self._duration.split(':'):
@@ -44,12 +48,12 @@ class SearchResult:
         return seconds
 
     @property
-    def minutes(self) -> float:
-        return self.seconds / 60
+    def minutes(self) -> int:
+        return self.seconds // 60
 
     @property
-    def hours(self) -> float:
-        return self.minutes / 60
+    def hours(self) -> int:
+        return self.minutes // 60
 
 
 class SearchResults:

@@ -32,7 +32,7 @@ def main():
         print("Could not find any videos.")
         exit(0)
 
-    cli.ask_choices(prompt="Select video:", choices=[Choice(name=result.title, value=result) for result in youtube_results.results], most_number_selections=1)
+    cli.ask_choices(prompt="Select video:", choices=[Choice(name=f"{result.title} ({result.duration_stamp})", value=result) for result in youtube_results.results], most_number_selections=1)
     choice = cli.get_choices(question_number=4)[0]
     video = choice.value
 
