@@ -9,15 +9,16 @@ from modules.sports_api.utils import same_date
 
 
 class Schedule:
-    def __init__(self, schedule: ApiSchedule):
+    def __init__(self, schedule: ApiSchedule, team):
         self._schedule = schedule
+        self._team = team
 
     @property
     def games(self) -> List[Game]:
         games = []
         num = 1
         for game in self._schedule._games:
-            games.append(Game(game, num))
+            games.append(Game(game=game, number=num, team=self._team))
             num += 1
         return games
 

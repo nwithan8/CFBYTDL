@@ -5,9 +5,10 @@ from sportsipy.ncaaf.schedule import Game as ApiGame
 
 
 class Game:
-    def __init__(self, game: ApiGame, number: int):
+    def __init__(self, game: ApiGame, number: int, team):
         self.number = number
         self._game = game
+        self._team = team
 
     @property
     def opponent_name(self) -> str:
@@ -46,6 +47,10 @@ class Game:
         return self.datetime.date()
 
     @property
+    def year(self) -> int:
+        return self.date.year
+
+    @property
     def date_string(self) -> str:
         return self._game.date
 
@@ -68,3 +73,7 @@ class Game:
     @property
     def is_neutral(self) -> bool:
         return self.location == constants.NEUTRAL
+
+    @property
+    def title(self) -> str:
+        return f"s{self.year}e{self.number} {self._team.name} {'vs.' if self.is_home else 'at'} {self.opponent_name} ({self.date.strftime('%m-%d-%Y')})"

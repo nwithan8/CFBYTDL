@@ -37,7 +37,7 @@ class Team:
         return self.get_schedule().games
 
     def get_schedule(self, year: int = None) -> Schedule:
-        return Schedule(ApiSchedule(abbreviation=self.abbreviation, year=year))
+        return Schedule(ApiSchedule(abbreviation=self.abbreviation, year=year), team=self)
 
     def get_game_by_year_by_opponent(self, year: int, opponent_abbreviation: str) -> Game | None:
         return self.get_schedule(year=year).get_game_by_opponent(opponent_abbreviation=opponent_abbreviation)

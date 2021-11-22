@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from modules.sports_api import ncaaf
 from modules.sports_api.enums import Sport
 
