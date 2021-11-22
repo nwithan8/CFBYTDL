@@ -19,22 +19,27 @@ def ask_yes_or_no_question(prompt: str) -> bool:
     return False
 
 
-def validate_choice(choice: str, choices: list) -> bool:
-    if choice not in choices:
-        print(f"Invalid choice: '{choice}'.")
-        return False
-    return True
+def process_choice(choice: str, choices: list) -> str | None:
+    try:
+        choice = int(choice)
+        if choice < 1 or choice > len(choices):
+            raise ValueError
+        return choices[choice - 1]
+    except ValueError:
+        return None
 
 
 def _ask_for_all_choices(prompt: str, choices: list) -> str:
-    prompt = f"{prompt} [{', '.join(choices)}] "
+    for index, choice in enumerate(choices):
+        prompt += f"\n{index + 1}) {choice}"
+    prompt += "\nChoice:"
     return ask_question(prompt=prompt)
 
 
 def ask_multiple_choices(prompt: str, choices: list) -> list[str]:
     answer = _ask_for_all_choices(prompt=prompt, choices=choices)
-    selections = [selection.strip() for selection in answer.split(';')]
-    if not all([validate_choice(choice=selection, choices=choices) for selection in selections]):
+    selections = [process_choice(choice=selection.strip(), choices=choices) for selection in answer.split(',')]
+    if not all(selections):
         return ask_multiple_choices(prompt=prompt, choices=choices)
     return selections
 
@@ -46,11 +51,11 @@ def ask_specific_number_range_of_choices(prompt: str, choices: list, lower_numbe
     if higher_number < lower_number:
         raise ValueError(f"Higher number is smaller than lower number.")
     if higher_number is None:
-        prompt = f"{prompt} (Choose {lower_number} or more, separated by ; ): "
+        prompt = f"{prompt} (Choose {lower_number} or more, separated by , ): "
     elif higher_number == lower_number:
-        prompt = f"{prompt} (Choose {lower_number}, separated by ; ): "
+        prompt = f"{prompt} (Choose {lower_number}, separated by , ): "
     elif lower_number == 1:
-        prompt = f"{prompt} (Choose up to {higher_number}, separated by ; ): "
+        prompt = f"{prompt} (Choose up to {higher_number}, separated by , ): "
     selections = ask_multiple_choices(prompt=prompt, choices=choices)
     if higher_number and len(selections) > higher_number:
         print(f"Number of selected choices is larger than {higher_number}.")
