@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import uuid
 
 import modules.cli.cli
 from modules.cli import CommandLine, Choice
@@ -45,7 +46,7 @@ def main_manual(sport: Sport):
         title = f"{title} ({special_game_name})"
 
     print(f"Downloading {link}")
-    downloader = Downloader(video_id=link, title=title, year=int(year))
+    downloader = Downloader(video_id=str(uuid.uuid4()), title=title, year=int(year))
     downloader.download(youtube_link=link, include_captions=False)
 
 
