@@ -82,7 +82,7 @@ class CommandLine:
             answer = ask_yes_or_no_question(prompt=prompt)
         else:
             answer = ask_question(prompt=prompt)
-        if (not y_n and not answer) or (y_n and answer not in [True, False]):
+        if (not y_n and not answer) or (y_n and not (answer is True or answer is False)):
             self.ask_question(prompt=prompt, y_n=y_n, confirm=confirm)
         elif confirm and not confirm_answer(answer=answer):
             self.ask_question(prompt=prompt, y_n=y_n, confirm=confirm)

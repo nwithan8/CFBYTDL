@@ -14,7 +14,8 @@ class VideoProcessor:
     def download(self, youtube_link: str, include_captions: bool = False, include_metadata: bool = False):
         self._downloader.download(youtube_link, include_captions)
         if include_metadata:
-            self._transcoder.embed_metadata(video_title=self._title, video_year=self._year)
+            self.embed_metadata(title=self._title, year=self._year)
+        self.finalize_file()
 
     def embed_metadata(self, title: str, year: int = None):
         self._transcoder.embed_metadata(video_title=title, video_year=year)

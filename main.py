@@ -1,11 +1,10 @@
 import argparse
 import datetime
-import uuid
 
 import modules.cli.cli
 from modules.cli import CommandLine, Choice
 from modules.sports_api import SportsAPI, Sport, create_game_title
-from modules.video_processing.yt_downloader import Downloader
+from modules.video_processing import VideoProcessor
 from modules.youtube_search import YouTubeSearcher
 
 youtube = YouTubeSearcher()
@@ -45,9 +44,7 @@ def main_manual(sport: Sport):
         special_game_name = cli.get_answer(question_number=9)
         title = f"{title} ({special_game_name})"
 
-    print(f"Downloading {link}")
-    downloader = Downloader(video_id=str(uuid.uuid4()), title=title, year=int(year))
-    downloader.download(youtube_link=link, include_captions=False)
+    download(link=link, title=title, year=int(year))
 
 
 def main_automatic(sport: Sport):
@@ -80,9 +77,16 @@ def main_automatic(sport: Sport):
     choice = cli.get_choices(question_number=4)[0]
     video = choice.value
 
-    print(f"Downloading {video.link}")
-    downloader = Downloader(video_id=video.id, title=game.title, year=game.year)
-    downloader.download(youtube_link=video.link, include_captions=False)
+    download(link=video.link, title=video.title, year=video.year)
+
+
+def download(link: str, title: str, year: int):
+    embed_captions = modules.cli.cli.ask_yes_or_no_question(prompt="Embed captions?")
+    embed_metadata = modules.cli.cli.ask_yes_or_no_question(prompt="Embed metadata?")
+
+    print(f"Downloading {link}")
+    processor = VideoProcessor(video_title=title, video_year=year)
+    processor.download(youtube_link=link, include_captions=embed_captions, include_metadata=embed_metadata)
 
 
 if __name__ == "__main__":
