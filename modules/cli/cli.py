@@ -77,16 +77,24 @@ class CommandLine:
     def __init__(self):
         self._answers = {}
 
-    def ask_question(self, prompt: str, y_n: bool = False, confirm: bool = False) -> None:
+    def ask_question(self, prompt: str, default_answer=None, y_n: bool = False, confirm: bool = False) -> None:
         if y_n:
             answer = ask_yes_or_no_question(prompt=prompt)
         else:
             answer = ask_question(prompt=prompt)
         # TODO: Fix this damn logic
-        if (not y_n and not answer) or (y_n and not (answer is True or answer is False)):
-            self.ask_question(prompt=prompt, y_n=y_n, confirm=confirm)
-        elif confirm and not confirm_answer(answer=answer):
-            self.ask_question(prompt=prompt, y_n=y_n, confirm=confirm)
+        if y_n and (answer is not True and answer is not False):  # Y/N answer that wasn't answered
+            if default_answer:
+                self._answers[len(self._answers.keys())] = QuestionAndAnswer(question=prompt, answer=default_answer)
+            else:
+                self.ask_question(prompt=prompt, default_answer=default_answer, y_n=y_n, confirm=confirm)
+        elif not answer:  # Empty non-Y/N answer
+            if default_answer:
+                self._answers[len(self._answers.keys())] = QuestionAndAnswer(question=prompt, answer=default_answer)
+            else:
+                self.ask_question(prompt=prompt, default_answer=default_answer, y_n=y_n, confirm=confirm)
+        elif confirm and not confirm_answer(answer=answer):  # Confirmation required but missing
+            self.ask_question(prompt=prompt, default_answer=default_answer, y_n=y_n, confirm=confirm)
         else:
             self._answers[len(self._answers.keys())] = QuestionAndAnswer(question=prompt, answer=answer)
 

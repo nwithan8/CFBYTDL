@@ -21,22 +21,26 @@ def main_manual(sport: Sport):
     cli.ask_question(prompt="Team 1:")
     cli.ask_question(prompt="Team 1 Home?", y_n=True)
     cli.ask_question(prompt="Team 2:")
+    cli.ask_question(prompt="Season:")
     cli.ask_question(prompt="Game Number:")
-    cli.ask_question(prompt="Year:")
-    cli.ask_question(prompt="Month:")
-    cli.ask_question(prompt="Day:")
 
     link = cli.get_answer(question_number=1)
     team_1_name = cli.get_answer(question_number=2)
     team_1_home = cli.get_answer(question_number=3)
     team_2_name = cli.get_answer(question_number=4)
-    game_number = cli.get_answer(question_number=5)
-    year = cli.get_answer(question_number=6)
-    month = cli.get_answer(question_number=7)
-    day = cli.get_answer(question_number=8)
+    season = cli.get_answer(question_number=5)
+    game_number = cli.get_answer(question_number=6)
+
+    cli.ask_question(prompt="Year:", default_answer=season)
+    cli.ask_question(prompt="Month:")
+    cli.ask_question(prompt="Day:")
+
+    year = cli.get_answer(question_number=7)
+    month = cli.get_answer(question_number=8)
+    day = cli.get_answer(question_number=9)
 
     game_date = datetime.datetime(year=int(year), month=int(month), day=int(day))
-    title = create_game_title(sport=sport, year=int(year), game_number=int(game_number), team_1_name=team_1_name,
+    title = create_game_title(sport=sport, year=int(season), game_number=int(game_number), team_1_name=team_1_name,
                               team_2_name=team_2_name, team_1_home=bool(team_1_home), game_date=game_date)
 
     if modules.cli.cli.ask_yes_or_no_question(prompt="Special game?"):
