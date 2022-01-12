@@ -30,7 +30,7 @@ class API:
         return None
 
     def get_team_schedule(self, team: Team = None, team_abbreviation: str = None, year: int = None) -> Schedule:
-        return Schedule(ApiSchedule(abbreviation=team.abbreviation if team else team_abbreviation, year=year))
+        return Schedule(ApiSchedule(abbreviation=team.abbreviation if team else team_abbreviation, year=year), team=team)
 
     def get_game_by_teams_and_year(self, team_1: Team, team_2: Team, year: int) -> Game:
         return team_1.get_game_by_year_by_opponent(year=year, opponent_abbreviation=team_2.abbreviation)

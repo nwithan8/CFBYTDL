@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import Enum
 
 
@@ -12,7 +14,7 @@ class Sport(Enum):
     HOCKEY = 8
 
     @staticmethod
-    def get_sport_enum(sport: str) -> 'Sport':
+    def get_sport_enum(sport: str) -> 'Sport' | None:
         sport = sport.lower().strip()
         if sport in ["futbol", "soccer"]:
             return Sport.SOCCER
