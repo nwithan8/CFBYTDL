@@ -30,7 +30,8 @@ def _ask_for_all_choices(prompt: str, choices: list[Choice]) -> str:
 
 def ask_multiple_choices(prompt: str, choices: list[Choice]) -> MultipleChoiceQuestionAndAnswers:
     answer = _ask_for_all_choices(prompt=prompt, choices=choices)
-    response = MultipleChoiceQuestionAndAnswers(question=prompt, options=choices, answers=[int(item) for item in answer.split(',')])
+    response = MultipleChoiceQuestionAndAnswers(question=prompt, options=choices,
+                                                answers=[int(item) for item in answer.split(',')])
     if not response.validate():
         return ask_multiple_choices(prompt=prompt, choices=choices)
     return response
@@ -58,8 +59,10 @@ def ask_specific_number_range_of_choices(prompt: str, choices: list[Choice], low
     return response
 
 
-def ask_specific_number_of_choices(prompt: str, choices: list[Choice], number: int = None) -> MultipleChoiceQuestionAndAnswers:
-    return ask_specific_number_range_of_choices(prompt=prompt, choices=choices, lower_number=number, higher_number=number)
+def ask_specific_number_of_choices(prompt: str, choices: list[Choice], number: int = None) \
+        -> MultipleChoiceQuestionAndAnswers:
+    return ask_specific_number_range_of_choices(prompt=prompt,
+                                                choices=choices, lower_number=number, higher_number=number)
 
 
 def confirm_answer(answer: str) -> bool:

@@ -77,4 +77,4 @@ class Game:
     @property
     def title(self) -> str:
         # return self.number with leading zero
-        return f"s{self.year}e{self.number:02d} {self._team.name} {'vs.' if self.is_home else 'at'} {self.opponent_name} ({self.date.strftime('%m-%d-%Y')})"
+        return f"s{self.year}e{self.number:02d} {self._team.name} {'vs.' if self.is_home else 'at'} {self.opponent_name} ({self.date.strftime('%Y-%m-%d')}) "

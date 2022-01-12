@@ -9,7 +9,7 @@ class SportsAPI:
         self._ncaaf = ncaaf.API()
 
     def _get_sub_api(self, sport: Sport):
-        if sport in [Sport.NCAAF, Sport.COLLEGE_FOOTBALL]:
+        if sport == Sport.COLLEGE_FOOTBALL:
             return self._ncaaf
 
     def get_team(self, sport: Sport, team_name: str) -> ncaaf.Team | None:

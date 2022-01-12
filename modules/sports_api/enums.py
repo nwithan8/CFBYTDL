@@ -1,17 +1,34 @@
 from enum import Enum
 
+
 class Sport(Enum):
-    FUTBOL = 1
     SOCCER = 1
-    MLB = 2
-    BASEBALL = 2
-    NBA = 3
-    BASKETBALL = 3
-    NCAAB = 4
+    COLLEGE_FOOTBALL = 2
+    PRO_FOOTBALL = 3
     COLLEGE_BASKETBALL = 4
-    NCAAF = 5
-    COLLEGE_FOOTBALL = 5
-    NFL = 6
-    FOOTBALL = 6
-    NHL = 7
-    HOCKEY = 7
+    PRO_BASKETBALL = 5
+    COLLEGE_BASEBALL = 6
+    PRO_BASEBALL = 7
+    HOCKEY = 8
+
+    @staticmethod
+    def get_sport_enum(sport: str) -> 'Sport':
+        sport = sport.lower().strip()
+        if sport in ["futbol", "soccer"]:
+            return Sport.SOCCER
+        elif sport in ["ncaaf", "cfb", "college football"]:
+            return Sport.COLLEGE_FOOTBALL
+        elif sport in ["nfl", "football"]:
+            return Sport.PRO_FOOTBALL
+        elif sport in ["ncaab", "cfb", "college basketball"]:
+            return Sport.COLLEGE_BASKETBALL
+        elif sport in ["nba", "basketball"]:
+            return Sport.PRO_BASKETBALL
+        elif sport in ["college baseball"]:
+            return Sport.COLLEGE_BASEBALL
+        elif sport in ["mlb", "baseball"]:
+            return Sport.PRO_BASEBALL
+        elif sport == ["nhl", "hockey"]:
+            return Sport.HOCKEY
+        else:
+            return None

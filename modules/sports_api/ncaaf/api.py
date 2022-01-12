@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 from sportsipy.ncaaf.teams import Team as ApiTeam, _retrieve_all_teams
