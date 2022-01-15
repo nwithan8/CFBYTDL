@@ -45,7 +45,7 @@ def main_manual(sport: Sport):
 
     if modules.cli.cli.ask_yes_or_no_question(prompt="Special game?"):
         cli.ask_question(prompt="Special game name:")
-        special_game_name = cli.get_answer(question_number=9)
+        special_game_name = cli.get_answer(question_number=10)
         title = f"{title} ({special_game_name})"
 
     download(link=link, title=title, year=int(year))
