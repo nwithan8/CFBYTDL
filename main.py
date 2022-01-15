@@ -2,7 +2,7 @@ import argparse
 import datetime
 
 import modules.cli.cli
-from modules.cli import CommandLine, Choice
+from modules.cli import CommandLine, Choice, ask_yes_or_no_question
 from modules.sports_api import SportsAPI, Sport, create_game_title
 from modules.video_processing import VideoProcessor
 from modules.youtube_search import YouTubeSearcher
@@ -17,48 +17,32 @@ parser.add_argument('--manual', action='store_true', help='Manually provide link
 
 
 def main_manual(sport: Sport):
-    cli.ask_question(prompt="Link:")
-    cli.ask_question(prompt="Team 1:")
-    cli.ask_question(prompt="Team 1 Home?", y_n=True)
-    cli.ask_question(prompt="Team 2:")
-    cli.ask_question(prompt="Season:")
-    cli.ask_question(prompt="Game Number:")
+    link = cli.ask_question(prompt="Link:").answer
+    team_1_name = cli.ask_question(prompt="Team 1:").answer
+    team_1_home = cli.ask_question(prompt="Team 1 Home?", y_n=True).answer
+    team_2_name = cli.ask_question(prompt="Team 2:").answer
+    season = cli.ask_question(prompt="Season:").answer
+    game_number = cli.ask_question(prompt="Game Number:").answer
 
-    link = cli.get_answer(question_number=1)
-    team_1_name = cli.get_answer(question_number=2)
-    team_1_home = cli.get_answer(question_number=3)
-    team_2_name = cli.get_answer(question_number=4)
-    season = cli.get_answer(question_number=5)
-    game_number = cli.get_answer(question_number=6)
-
-    cli.ask_question(prompt="Year:", default_answer=season)
-    cli.ask_question(prompt="Month:")
-    cli.ask_question(prompt="Day:")
-
-    year = cli.get_answer(question_number=7)
-    month = cli.get_answer(question_number=8)
-    day = cli.get_answer(question_number=9)
+    year = cli.ask_question(prompt="Year:", default_answer=season).answer
+    month = cli.ask_question(prompt="Month:").answer
+    day = cli.ask_question(prompt="Day:").answer
 
     game_date = datetime.datetime(year=int(year), month=int(month), day=int(day))
     title = create_game_title(sport=sport, year=int(season), game_number=int(game_number), team_1_name=team_1_name,
                               team_2_name=team_2_name, team_1_home=bool(team_1_home), game_date=game_date)
 
-    if modules.cli.cli.ask_yes_or_no_question(prompt="Special game?"):
-        cli.ask_question(prompt="Special game name:")
-        special_game_name = cli.get_answer(question_number=10)
+    if ask_yes_or_no_question(prompt="Special game?"):
+        special_game_name = cli.ask_question(prompt="Special game name:").answer
         title = f"{title} ({special_game_name})"
 
     download(link=link, title=title, year=int(year))
 
 
 def main_automatic(sport: Sport):
-    cli.ask_question(prompt="Team 1:")
-    cli.ask_question(prompt="Team 2:")
-    cli.ask_question(prompt="Year:")
-
-    team_1_name = cli.get_answer(question_number=1)
-    team_2_name = cli.get_answer(question_number=2)
-    year = cli.get_answer(question_number=3)
+    team_1_name = cli.ask_question(prompt="Team 1:").answer
+    team_2_name = cli.ask_question(prompt="Team 2:").answer
+    year = cli.ask_question(prompt="Year:").answer
 
     team1 = sports_api.get_team(sport=sport, team_name=team_1_name)
     team2 = sports_api.get_team(sport=sport, team_name=team_2_name)
@@ -75,18 +59,20 @@ def main_automatic(sport: Sport):
         print("Could not find any videos.")
         exit(0)
 
-    cli.ask_choices(prompt="Select video:",
-                    choices=[Choice(name=f"{result.title} ({result.duration_stamp})", value=result) for result in
-                             youtube_results.results], most_number_selections=1)
-    choice = cli.get_choices(question_number=4)[0]
+    video_choices = cli.ask_choices(prompt="Select video:",
+                                    choices=[Choice(name=f"{result.title} ({result.duration_stamp})", value=result)
+                                             for result
+                                             in
+                                             youtube_results.results], most_number_selections=1)
+    choice = video_choices.selected_choices[0]
     video = choice.value
 
     download(link=video.link, title=video.title, year=video.year)
 
 
 def download(link: str, title: str, year: int):
-    embed_captions = modules.cli.cli.ask_yes_or_no_question(prompt="Embed captions?")
-    embed_metadata = modules.cli.cli.ask_yes_or_no_question(prompt="Embed metadata?")
+    embed_captions = ask_yes_or_no_question(prompt="Embed captions?")
+    embed_metadata = ask_yes_or_no_question(prompt="Embed metadata?")
 
     print(f"Downloading {link}")
     processor = VideoProcessor(video_title=title, video_year=year)

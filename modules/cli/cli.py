@@ -77,7 +77,7 @@ class CommandLine:
     def __init__(self):
         self._answers = {}
 
-    def ask_question(self, prompt: str, default_answer=None, y_n: bool = False, confirm: bool = False) -> None:
+    def ask_question(self, prompt: str, default_answer=None, y_n: bool = False, confirm: bool = False) -> QuestionAndAnswer | None:
         if y_n:
             answer = ask_yes_or_no_question(prompt=prompt)
         else:
@@ -85,21 +85,27 @@ class CommandLine:
         # TODO: Fix this damn logic
         if y_n and (answer is not True and answer is not False):  # Y/N answer that wasn't answered
             if default_answer:
-                self._answers[len(self._answers.keys())] = QuestionAndAnswer(question=prompt, answer=default_answer)
+                response = QuestionAndAnswer(question=prompt, answer=default_answer)
+                self._answers[len(self._answers.keys())] = response
+                return response
             else:
                 self.ask_question(prompt=prompt, default_answer=default_answer, y_n=y_n, confirm=confirm)
         elif not answer:  # Empty non-Y/N answer
             if default_answer:
-                self._answers[len(self._answers.keys())] = QuestionAndAnswer(question=prompt, answer=default_answer)
+                response = QuestionAndAnswer(question=prompt, answer=default_answer)
+                self._answers[len(self._answers.keys())] = response
+                return response
             else:
                 self.ask_question(prompt=prompt, default_answer=default_answer, y_n=y_n, confirm=confirm)
         elif confirm and not confirm_answer(answer=answer):  # Confirmation required but missing
             self.ask_question(prompt=prompt, default_answer=default_answer, y_n=y_n, confirm=confirm)
         else:
-            self._answers[len(self._answers.keys())] = QuestionAndAnswer(question=prompt, answer=answer)
+            response = QuestionAndAnswer(question=prompt, answer=answer)
+            self._answers[len(self._answers.keys())] = response
+            return response
 
     def ask_choices(self, prompt: str, choices: list[Choice], least_number_selections: int = 1,
-                    most_number_selections: int = None, confirm: bool = False) -> None:
+                    most_number_selections: int = None, confirm: bool = False) -> MultipleChoiceQuestionAndAnswers:
         answer = ask_specific_number_range_of_choices(prompt=prompt, choices=choices,
                                                       lower_number=least_number_selections,
                                                       higher_number=most_number_selections)
@@ -111,6 +117,7 @@ class CommandLine:
                              most_number_selections=most_number_selections, confirm=confirm)
         else:
             self._answers[len(self._answers.keys())] = answer
+            return answer
 
     def get_answer(self, question_number: int) -> list[Choice] | None | str:
         question_number -= 1
